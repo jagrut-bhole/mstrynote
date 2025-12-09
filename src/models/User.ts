@@ -70,3 +70,6 @@ const UserSchema : Schema<User> = new Schema({
 })
 
 export const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model("User",UserSchema);
+// this line safeguards to prevent Mongoose from re-compiling a model if it already exists
+
+// agar hai toh woh use karo || varna vapis banano
