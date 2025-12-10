@@ -1,49 +1,43 @@
-import { resend } from "../lib/resend";
-
+import { transporter } from "../lib/mailer";
+import { render } from "@react-email/render";
 import VerificationEmail from "@/emails/VerificationEmail";
-
 import { ApiResponse } from "../types/ApiResponse";
 
 export async function sendVerificationEmail(
-    email : string,
-    username : string,
-    verifyCode : string
-) : Promise<ApiResponse> {
+    email: string,
+    username: string,
+    verifyCode: string
+): Promise<ApiResponse> {
     try {
-
-        const { data, error } = await resend.emails.send({
-            from: 'onboarding@resend.dev',
-            to: email,
-            subject: "MstryNote | Verification Mail",
-            react: VerificationEmail({
+        // Render the React email component to HTML
+        const emailHtml = await render(
+            VerificationEmail({
                 username,
                 verifyCode
-            }),
+            })
+        );
+
+        // Send email using nodemailer
+        const info = await transporter.sendMail({
+            from: `"${process.env.SMTP_FROM_NAME || 'MstryNote'}" <${process.env.SMTP_FROM_EMAIL}>`,
+            to: email,
+            subject: "MstryNote | Verification Mail",
+            html: emailHtml,
         });
 
-        if (error) {
-            console.error("Resend API Error:", error);
-            return {
-                success : false,
-                message : `Failed to send email: ${error.message}`
-            }
-        }
-
-        console.log("Email sent successfully:", data);
+        console.log("Email sent successfully. Message ID:", info?.messageId || 'N/A');
 
         return {
-            success : true,
-            message : "Verification mail send SuccessFully!!"
-        }
+            success: true,
+            message: "Verification mail sent successfully!!"
+        };
 
     } catch (EmailError) {
-
         console.error("Sending verification email Error:", EmailError);
 
         return {
-            success : false,
-            message : "Failed to send Verification Email"
-        }
-
+            success: false,
+            message: "Failed to send Verification Email"
+        };
     }
 }
