@@ -55,7 +55,7 @@ export default function VerifyAccount() {
 
         if (signInResult?.error) {
           toast.error('Verification successful but auto-login failed. Please login manually.');
-          router.replace('/sign-in');
+          router.replace('/login');
         } else {
           toast.success('Account verified and logged in successfully!');
           router.replace('/dashboard');
@@ -63,7 +63,7 @@ export default function VerifyAccount() {
       } else {
         // Fallback if session data not found
         toast.success('Account verified! Please login to continue.');
-        router.replace('/sign-in');
+        router.replace('/login');
       }
 
     } catch (error) {

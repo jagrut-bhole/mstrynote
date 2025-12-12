@@ -14,15 +14,17 @@ function NavBar() {
 
   return (
     <header className={cn(
-        'sticky top-5 z-50 mt-6',
+        'sticky top-5 z-50',
 		'mx-auto w-full max-w-3xl rounded-lg border shadow',
 		'bg-background/95 supports-backdrop-filter:bg-background/80 backdrop-blur-lg',
     )}>
         <nav className='mx-auto flex items-center justify-between p-1.5'>
-            <div className=" flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 duration-100">
-				<MessageCircleIcon className="size-5" />
-				<p className="font-mono text-base font-bold">MSTRYNOTE</p>
+            <Link href="/">
+                <div className=" flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 duration-100">
+                    <MessageCircleIcon className="size-5" />
+				    <p className="font-mono text-base font-bold">MSTRYNOTE</p>
 			</div>
+            </Link>
             <div className='flex gap-2'>
                 {
                 session ? 
