@@ -30,7 +30,7 @@ export async function GET(request : Request){
             {$group : {_id : '$_id', messages : {$push : '$messages'}}} // now group all the arrays that are unwind under same userId
         ])
 
-        if(!user || user.length === 0) {
+        if(!user) {
             return Response.json({
             message : "User not found!!",
             success : false

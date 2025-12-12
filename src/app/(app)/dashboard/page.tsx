@@ -85,7 +85,7 @@ const DashBoard = () => {
     fetchMessages();
 
     fetchAcceptMessages();
-  }, [session, setValue, fetchAcceptMessages, fetchMessages]);
+  }, [session, setValue, fetchMessages, fetchAcceptMessages]);
 
   const handleSwitchChange = async () => {
 

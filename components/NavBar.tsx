@@ -30,7 +30,7 @@ function NavBar() {
                 session ? 
                 (
                     <>
-                        <span className="mr-4">
+                        <span className="mr-4 mt-1">
                             Welcome, {user.username || user.email}
                         </span>
                         <Button size="sm" onClick={() => signOut()} className='w-full md:w-auto bg-slate-100 text-black hover:bg-slate-200 hover:cursor-pointer' variant='outline'>
