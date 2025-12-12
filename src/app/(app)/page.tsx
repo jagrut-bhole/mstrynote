@@ -22,7 +22,7 @@ export default function Home() {
             </main>
 
               <footer className="text-center w-full py-10 text-sm bg-slate-50 text-gray-800/70">
-                <p className="mt-4 text-center">Copyright © {date} <a className="font-bold" href="https://prebuiltui.com">MstryNote</a>. All rights reservered.</p>
+                <p className="mt-4 text-center">Copyright © {date} <a className="font-bold" href="https://github.com/jagrut-bhole">MstryNote</a>. All rights reservered.</p>
             </footer>
         </>
     )
