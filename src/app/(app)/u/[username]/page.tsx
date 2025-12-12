@@ -52,7 +52,9 @@ const SendMessagePage = () => {
     };
 
     const onSubmit = async (data: z.infer<typeof messageSchema>) => {
+
         setIsLoading(true);
+
         try {
             const response = await axios.post(`/api/send-message`, {
                 username,
@@ -61,16 +63,20 @@ const SendMessagePage = () => {
 
             toast.success(response.data.message ?? "Message sent Successfully!!");
             form.reset({ ...form.getValues(), content: '' });
+
         } catch (error) {
+
             console.log("Error while sending the message!!", error);
             const axiosError = error as AxiosError<ApiResponse>;
             toast.error(axiosError.response?.data.message ?? "Failed to send the message!!");
+            
         } finally {
             setIsLoading(false);
         }
     };
 
     const fetchSuggestedMessage = async () => {
+
         setIsSuggestLoading(true);
         setError(null);
         try {
@@ -82,6 +88,7 @@ const SendMessagePage = () => {
             } else {
                 setError("Failed to get suggestions");
             }
+
         } catch (err) {
             console.error("Error while fetching the suggested message!!", err);
             const axiosError = err as AxiosError<ApiResponse>;

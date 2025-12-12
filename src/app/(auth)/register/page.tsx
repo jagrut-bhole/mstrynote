@@ -85,6 +85,10 @@ export default function RegisterForm() {
 
       toast.success(response.data.message);
 
+      // Store password temporarily for auto-login after verification
+      sessionStorage.setItem('temp_register_password', data.password);
+      sessionStorage.setItem('temp_register_identifier', data.email);
+
       router.replace(`/verify/${username}`);
 
     } catch (error) {

@@ -41,7 +41,7 @@ const DashBoard = () => {
     setIsRefreshing(true);
     try {
       const response = await axios.get<ApiResponse>('/api/accept-messages');
-      setValue('acceptMessages', !!response.data.isAcceptingMessages);
+      setValue('acceptMessages', !!response.data.isAcceptingMessage);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast.error(axiosError.response?.data.message);
@@ -50,19 +50,26 @@ const DashBoard = () => {
     }
   }, [setValue]);
 
-  const fetchMessages = useCallback(
-    async (refresh: boolean = false) => {
+  const fetchMessages = useCallback(async (refresh: boolean = false) => {
       setIsLoading(true);
       setIsRefreshing(false);
       try {
         const response = await axios.get<ApiResponse>('/api/get-messages');
-        setMessages(response.data.messages || []);
+
+        setMessages(Array.isArray(response.data?.messages) ? response.data.messages : []);
+
         if (refresh) {
           toast.success("Showing latest messages");
         }
+
       } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
-        toast.error(axiosError.response?.data.message);
+        const msg = axiosError?.response?.data?.message;
+
+      // avoid showing toast for "empty" messagessetVa
+      if (msg && msg !== "user messages not found") {
+        toast.error(msg);
+      }
       } finally {
         setIsLoading(false);
         setIsRefreshing(false);
@@ -81,19 +88,24 @@ const DashBoard = () => {
   }, [session, setValue, fetchAcceptMessages, fetchMessages]);
 
   const handleSwitchChange = async () => {
+
     try {
-      const response = await axios.post<ApiResponse>('/api/accept-messages', {
-        acceptMessages: !acceptMessages,
-      });
+
+      const response = await axios.post<ApiResponse>('/api/accept-messages', {acceptMessages: !acceptMessages,});
       setValue('acceptMessages', !acceptMessages);
+
     toast.success(response.data.message);
+    
     } catch (error) {
+
       const axiosError = error as AxiosError<ApiResponse>;
       toast.error(axiosError.response?.data.message);
+      
     }
   };
 
   if (!session || !session.user) {
+    // return <h1 className='text-center mt-20'>Hello User: you are not signed in : Please signin</h1>
     return <h1 className='text-center mt-20'>Hello User: you are not signed in : Please signin</h1>
   }
 

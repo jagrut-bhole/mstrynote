@@ -17,6 +17,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { toast } from 'sonner';
+import { signIn } from 'next-auth/react'
 
 export default function VerifyAccount() {
   const router = useRouter();
@@ -28,15 +29,43 @@ export default function VerifyAccount() {
   const onSubmit = async (data: z.infer<typeof verifySchema>) => {
 
     try {
-          console.log("Username : ",params.username);
+      console.log("Username : ",params.username);
       const response = await axios.post<ApiResponse>(`/api/verify-code`, {
         username: params.username,
         verifyCode : data.verifyCode,
       });
 
-     toast.success(response.data.message);
+      toast.success(response.data.message);
 
-      router.replace('/dashboard');
+      // Auto-login after successful verification
+      const tempPassword = sessionStorage.getItem('temp_register_password');
+      const tempIdentifier = sessionStorage.getItem('temp_register_identifier');
+
+      if (tempPassword && tempIdentifier) {
+        // Clear temporary storage
+        sessionStorage.removeItem('temp_register_password');
+        sessionStorage.removeItem('temp_register_identifier');
+
+        // Sign in the user
+        const signInResult = await signIn('credentials', {
+          redirect: false,
+          identifier: tempIdentifier,
+          password: tempPassword,
+        });
+
+        if (signInResult?.error) {
+          toast.error('Verification successful but auto-login failed. Please login manually.');
+          router.replace('/sign-in');
+        } else {
+          toast.success('Account verified and logged in successfully!');
+          router.replace('/dashboard');
+        }
+      } else {
+        // Fallback if session data not found
+        toast.success('Account verified! Please login to continue.');
+        router.replace('/sign-in');
+      }
+
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
 
